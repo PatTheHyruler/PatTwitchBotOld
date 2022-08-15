@@ -5,9 +5,6 @@ from .services import ServiceUnitOfWork
 
 
 class ClipMirrorCog(BaseTwitchCog[ServiceUnitOfWork]):
-    def __init__(self, bot, service_uow):
-        super().__init__(bot, service_uow)
-
     @commands.command()
     async def hello(self, ctx: commands.Context):
         await ctx.send(f"Hello, {ctx.author.name}")
@@ -15,6 +12,7 @@ class ClipMirrorCog(BaseTwitchCog[ServiceUnitOfWork]):
         await self._service_uow.save_changes()
         await self._service_uow.refresh(twitch_broadcaster)
         await ctx.send(f"Hello, DB {twitch_broadcaster.display_name}")
+        await self._service_uow.close()
 
     async def check_for_new_clips(self):
         pass

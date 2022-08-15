@@ -28,7 +28,8 @@ async def startup():
     await database.init()
 
     print("Loading modules")
-    bot.load_module(name="src.modules.twitch_monitor")
+    # bot.load_module(name="src.modules.twitch_monitor")
+    bot.load_module(name="src.modules.chat_bot")
     print("Finished loading modules")
 
     # await database.drop_tables()
