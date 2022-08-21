@@ -26,6 +26,8 @@ class QuoteCog(BaseTwitchCog[ServiceUnitOfWork]):
 
     @quote.command(name="add")
     async def quote_add(self, ctx: commands.Context, *quote_text):
+        if not await self.verify_mod(ctx):
+            return
         quote = await self._service_uow.quotes.add(Quote(" ".join(quote_text), ctx.author.name, ctx.message.timestamp))
         await self._service_uow.save_changes()
         await self._service_uow.refresh(quote)
@@ -34,6 +36,8 @@ class QuoteCog(BaseTwitchCog[ServiceUnitOfWork]):
 
     @quote.command(name="remove")
     async def quote_remove(self, ctx: commands.Context, quote_id: int):
+        if not await self.verify_mod(ctx):
+            return
         quote = await self._service_uow.quotes.remove_by_id(quote_id)
         await self._service_uow.save_changes()
         if quote is not None:

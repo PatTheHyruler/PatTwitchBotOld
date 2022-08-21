@@ -8,6 +8,7 @@ from src.config import Config
 async def startup():
     twitch_client_secret = Config.get().Twitch.ClientSecret
     twitch_access_token = Config.get().Twitch.AccessToken
+    twitch_command_prefix = Config.get().Twitch.CommandPrefix
 
     database_host = Config.get().Database.Host
     database_user = Config.get().Database.User
@@ -19,7 +20,7 @@ async def startup():
     )
     bot = TwitchBot(
         token=twitch_access_token,
-        prefix="_",
+        prefix=twitch_command_prefix,
         client_secret=twitch_client_secret,
         initial_channels=Config.get().Twitch.InitialChannels,
         database=database
@@ -30,6 +31,7 @@ async def startup():
     print("Loading modules")
     # bot.load_module(name="src.modules.twitch_monitor")
     bot.load_module(name="src.modules.chat_bot")
+    # bot.load_module(name="src.modules.test")
     print("Finished loading modules")
 
     # await database.drop_tables()

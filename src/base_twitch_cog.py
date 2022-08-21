@@ -16,3 +16,10 @@ class BaseTwitchCog(commands.Cog, Generic[TServiceUOW], metaclass=CogMeta):
         print(self.__class__, "initialized")
         self.bot = bot
         self._service_uow = service_uow
+
+    @staticmethod
+    async def verify_mod(ctx: commands.Context) -> bool:
+        if ctx.author.is_mod:
+            return True
+        await ctx.reply("You do not have permission to use this command!")
+        return False
