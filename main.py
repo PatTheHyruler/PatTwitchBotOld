@@ -1,8 +1,11 @@
 import asyncio
+import logging.handlers
+import sys
 
 from src import Database
 from src import TwitchBot
 from src.config import Config
+from src.logging import FileFormatter, ConsoleFormatter
 
 
 async def startup():
@@ -41,6 +44,22 @@ async def startup():
 
 
 if __name__ == '__main__':
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    file_handler = logging.handlers.RotatingFileHandler(
+            filename='pattwitchbot.log',
+            encoding='utf-8',
+            maxBytes=32 * 1024 * 1024,  # 32 MiB
+            backupCount=5,  # Rotate through 5 files
+    )
+    file_handler.setFormatter(FileFormatter())
+    logger.addHandler(file_handler)
+
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setFormatter(ConsoleFormatter())
+    logger.addHandler(stdout_handler)
+
     try:
         asyncio.run(startup())
     except KeyboardInterrupt:
