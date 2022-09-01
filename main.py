@@ -2,10 +2,9 @@ import asyncio
 import logging.handlers
 import sys
 
-from src import Database
-from src import TwitchBot
-from src.config import Config
-from src.logging import FileFormatter, ConsoleFormatter
+from src import TwitchBot, Database, Config, FileFormatter, ConsoleFormatter
+
+_logger = logging.getLogger(__name__)
 
 
 async def startup():
@@ -31,11 +30,12 @@ async def startup():
 
     await database.init()
 
-    print("Loading modules")
-    # bot.load_module(name="src.modules.twitch_monitor")
+    _logger.info("Loading modules")
+    bot.load_module(name="src.modules.twitch")
+    bot.load_module(name="src.modules.twitch_monitor")
     bot.load_module(name="src.modules.chat_bot")
     # bot.load_module(name="src.modules.test")
-    print("Finished loading modules")
+    _logger.info("Finished loading modules")
 
     # await database.drop_tables()
     # await database.create_tables()

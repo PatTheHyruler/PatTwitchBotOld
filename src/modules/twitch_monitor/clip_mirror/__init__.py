@@ -1,8 +1,7 @@
 from src import TwitchBot
 from .clip_mirror_cog import ClipMirrorCog
 from .routines import Routines
-from .services import ServiceUnitOfWork
-from .storage import StorageUnitOfWork
+from src.modules.twitch import StorageUnitOfWork, ServiceUnitOfWork
 
 
 def prepare(bot: TwitchBot):

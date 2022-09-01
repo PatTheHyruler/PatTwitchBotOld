@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from twitchio import HTTPException, User
 
@@ -39,6 +39,9 @@ class TwitchBroadcasterService(BaseService[TwitchBroadcaster, TwitchBroadcasterR
 
         return users[0]
 
-    async def add_twitch_broadcaster(self, login: str) -> TwitchBroadcaster:
-        user = await self.fetch_user(login=login)
-        return await self.storage_uow.twitch_broadcasters.upsert(TwitchBroadcaster(user))
+    async def add_twitch_broadcaster(self, login: str = None, user_id: int = None) -> TwitchBroadcaster:
+        user = await self.fetch_user(login=login, user_id=user_id)
+        return await self.storage_uow.twitch_broadcasters.upsert_external(TwitchBroadcaster(user))
+
+    async def get_by_login(self, login: str) -> Optional[TwitchBroadcaster]:
+        return await self.storage_uow.twitch_broadcasters.get_by_login(login)

@@ -84,9 +84,16 @@ class BaseStorageRepository(BaseRepository[TEntity], Generic[TEntity], metaclass
 
     async def update(self, entity_id: int, values: Dict[str, any]) -> TEntity:
         entity = await self.get_by_id(entity_id)
-        stmt = update(self._table).where(self._table.id == entity_id).values(values)
 
-        await self._session.execute(stmt)
+        for table_class, keys in entity.get_constructor_keys().items():
+            relevant_values = {}
+            for key in keys:
+                if key in values:
+                    relevant_values[key] = values[key]
+
+            stmt = update(table_class).where(table_class.id == entity.id).values(relevant_values)
+
+            await self._session.execute(stmt)
 
         _logger.info(entity, "Updated")
         return entity

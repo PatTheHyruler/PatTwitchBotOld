@@ -1,8 +1,8 @@
 from typing import TypeVar, TYPE_CHECKING, Generic
 
-from twitchio.ext import commands
 from twitchio.ext.commands.meta import CogMeta
 
+from .base_basic_twitch_cog import BaseBasicTwitchCog
 from .service import BaseServiceUnitOfWork
 
 if TYPE_CHECKING:
@@ -11,15 +11,14 @@ if TYPE_CHECKING:
 TServiceUOW = TypeVar("TServiceUOW", bound=BaseServiceUnitOfWork)
 
 
-class BaseTwitchCog(commands.Cog, Generic[TServiceUOW], metaclass=CogMeta):
+class BaseTwitchCog(BaseBasicTwitchCog, Generic[TServiceUOW], metaclass=CogMeta):
     def __init__(self, bot: "TwitchBot", service_uow: TServiceUOW):
-        print(self.__class__, "initialized")
-        self.bot = bot
         self._service_uow = service_uow
+        super().__init__(bot)
 
-    @staticmethod
-    async def verify_mod(ctx: commands.Context) -> bool:
-        if ctx.author.is_mod:
-            return True
-        await ctx.reply("You do not have permission to use this command!")
-        return False
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self._service_uow.save_changes()
+        await self._service_uow.close()

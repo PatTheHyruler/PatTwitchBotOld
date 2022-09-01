@@ -10,7 +10,8 @@ idna==3.3
 iso8601==1.0.2
 multidict==6.0.2
 SQLAlchemy==1.4.40
-twitchio @ git+https://github.com/PatTheHyruler/TwitchIO@f2f9671ae89b8fbdf58ac96e589059dd3a7d9e42
+twitchio @ git+https://github.com/PatTheHyruler/TwitchIO@a8df5711fa4e0b823a8acad6271434fb3b26c4d5
 typing_extensions==4.3.0
 yarl==1.8.1
 alembic==1.8.1
+termcolor~=1.1.0

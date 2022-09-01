@@ -1,12 +1,34 @@
 import asyncio
 import logging
+from typing import Dict, List, Type
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, async_scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 _logger = logging.getLogger(__name__)
-Base: declarative_base = declarative_base()
+
+
+class _Base:
+    @classmethod
+    def get_constructor_keys(cls) -> Dict[Type["_Base"], List[str]]:
+        result = {}
+        for base in cls.__bases__:
+            base_fullname = f"{base.__module__}.{base.__qualname__}"
+            if issubclass(base, _Base) and base_fullname not in (
+                    "sqlalchemy.orm.decl_api.Base",
+            ):
+                result.update(base.get_constructor_keys())
+
+        parent_keys = []
+        for parent_key in result.values():
+            parent_keys += parent_key
+
+        result[cls] = [key for key in cls.__dict__ if not key.startswith("_") and key not in parent_keys]
+        return result
+
+
+Base: declarative_base = declarative_base(cls=_Base)
 
 
 class Database:
@@ -18,7 +40,7 @@ class Database:
         self._connection = connection
 
     async def init(self):
-        print("Initializing database")
+        _logger.info("Initializing database")
         self._engine = create_async_engine(self._connection, echo=False, pool_size=20, max_overflow=10,
                                            pool_pre_ping=True, pool_recycle=3600)
         self._session_maker = sessionmaker(self._engine, class_=AsyncSession, expire_on_commit=False)

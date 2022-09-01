@@ -11,6 +11,8 @@ from src.database import Base
 # noinspection PyUnresolvedReferences
 import src.modules.chat_bot.quotes
 # noinspection PyUnresolvedReferences
+import src.modules.twitch
+# noinspection PyUnresolvedReferences
 import src.modules.twitch_monitor.clip_mirror
 
 # this is the Alembic Config object, which provides

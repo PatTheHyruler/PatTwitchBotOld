@@ -1,6 +1,6 @@
 from twitchio.ext import commands
 
-from src.base_twitch_cog import BaseTwitchCog
+from src import BaseTwitchCog
 from .services import ServiceUnitOfWork
 from .storage.model.quote import Quote
 
