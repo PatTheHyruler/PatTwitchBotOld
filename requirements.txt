@@ -13,3 +13,4 @@ SQLAlchemy==1.4.40
 twitchio @ git+https://github.com/PatTheHyruler/TwitchIO@f2f9671ae89b8fbdf58ac96e589059dd3a7d9e42
 typing_extensions==4.3.0
 yarl==1.8.1
+alembic==1.8.1
