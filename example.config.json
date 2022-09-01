@@ -1,0 +1,30 @@
+{
+  "Twitch": {
+    "ClientID": "ahjf12ghhasdjkhf12hadskdf734ha",
+    "ClientSecret": "76lk23nb23145kj652h34lkjss85gf",
+    "AccessToken": "lkjahs324hajksdf23gjhasdfjweuf",
+    "CommandPrefix": "!",
+    "InitialChannels": [
+      "username1",
+      "username2"
+    ],
+    "Owners": [
+      "ownerusername"
+    ]
+  },
+  "Download": {
+    "Monitor": {
+      "Clips": [
+        "username3245",
+        "username89435"
+      ]
+    }
+  },
+  "Database":
+  {
+    "User": "username",
+    "Password": "password",
+    "Host": "host address",
+    "Name": "database name"
+  }
+}
