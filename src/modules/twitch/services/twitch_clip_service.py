@@ -49,7 +49,7 @@ class TwitchClipService(BaseService[TwitchClip, TwitchClipRepository, StorageUni
                         video = videos[0]
                         if not await self.storage_uow.twitch_videos.exists_external(video.id):
                             twitch_video = TwitchVideo(video)
-                            twitch_video.authors.apppend(get_broadcaster(video.user))
+                            twitch_video.authors.append(await get_broadcaster(video.user))
                             await self.storage_uow.twitch_videos.add(twitch_video)
 
                 twitch_clip = TwitchClip(clip)
