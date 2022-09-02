@@ -1,0 +1,7 @@
+config.json
+*.log
+venv
+.idea
+**/__pycache__
+src/modules/test
+.git
