@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import List, Dict, Optional
 
@@ -21,14 +22,22 @@ class TwitchClipService(BaseService[TwitchClip, TwitchClipRepository, StorageUni
     ):
         super().__init__(bot, repository, storage_uow)
 
-    async def add_new_clips(self, clips: List[Clip]) -> List[TwitchClip]:
+    async def add_new_clips(self, clips: List[Clip], ended_at: datetime.datetime) -> List[TwitchClip]:
         broadcasters_proxy: Dict[int, TwitchBroadcaster] = {}
 
-        async def get_broadcaster(user: PartialUser) -> Optional[TwitchBroadcaster]:
+        async def get_broadcaster(user: PartialUser, mark_checked: bool = False) -> Optional[TwitchBroadcaster]:
+            def should_update_checked_time(twitch_broadcaster: TwitchBroadcaster):
+                return mark_checked and \
+                       (twitch_broadcaster.last_checked is None or twitch_broadcaster.last_checked < ended_at)
+
             if user.id in broadcasters_proxy:
-                return broadcasters_proxy[user.id]
+                twitch_broadcaster = broadcasters_proxy[user.id]
+                if not should_update_checked_time(twitch_broadcaster):
+                    return twitch_broadcaster
             async with self.bot.get_cog("TwitchAPI") as twitch:
                 twitch_broadcaster = await twitch.add_twitch_broadcaster(user_id=user.id)
+                if should_update_checked_time(twitch_broadcaster):
+                    twitch_broadcaster.last_checked = ended_at
                 broadcasters_proxy[user.id] = twitch_broadcaster
                 return twitch_broadcaster
 
@@ -36,7 +45,7 @@ class TwitchClipService(BaseService[TwitchClip, TwitchClipRepository, StorageUni
 
         for clip in clips:
             if not await self.storage_uow.twitch_clips.exists_external(clip.id):
-                broadcaster = await get_broadcaster(clip.broadcaster)
+                broadcaster = await get_broadcaster(clip.broadcaster, mark_checked=True)
                 creator = await get_broadcaster(clip.creator)
 
                 try:

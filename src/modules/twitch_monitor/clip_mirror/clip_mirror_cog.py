@@ -40,7 +40,7 @@ class ClipMirrorCog(BaseTwitchCog[ServiceUnitOfWork]):
                         f"Fetched clips length equals limit ({limit})! ({login=}, {limit=}, {last_checked=})"
                     )
 
-            added_twitch_clips = await self._service_uow.twitch_clips.add_new_clips(clips)
+            added_twitch_clips = await self._service_uow.twitch_clips.add_new_clips(clips, ended_at)
             _logger.info(f"Added {len(added_twitch_clips)} clips for channel {login}!")
         await self._service_uow.save_changes()
         await self._service_uow.close()
