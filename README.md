@@ -1,5 +1,7 @@
 # PatTwitchBot
 
+**NB! Old, unused, and not updated!!!**
+
 Twitch bot made for my own channel  
 Use at your own risk
 
